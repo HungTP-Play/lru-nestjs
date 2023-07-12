@@ -1,0 +1,7 @@
+*/**/node_modules
+gateway/node_modules
+mapper/node_modules
+redirect/node_modules
+analytic/node_modules
+grafana/png
+grafana/csv
