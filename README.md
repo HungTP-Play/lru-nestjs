@@ -71,6 +71,8 @@ curl  -X GET \
 
 ## Crate fake traffic
 
+Un-comment the k6 service in `docker-compose.yml` and run:
+
 ```bash
 docker compose up
 ```
