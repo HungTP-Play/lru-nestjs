@@ -199,13 +199,13 @@ services:
     volumes:
       - ./loki:/etc/loki
       - ./loki-config.yaml:/etc/loki/local-config.yaml
-  promtail:
+  promtail_grafana:
     image: grafana/promtail:main
     user: root
     volumes:
-      - ~/data/lru-nestjs/promtail:/etc/promtail
-      - ./promtail-config.yaml:/etc/promtail/local-config.yaml
+      - ./promtail:/etc/promtail
       - ~/data/lru-nestjs/logs:/var/log
+      - ./promtail-config.yaml:/etc/promtail/local-config.yaml
     command: -config.file=/etc/promtail/local-config.yaml
     depends_on:
       - loki
