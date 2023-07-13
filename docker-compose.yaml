@@ -80,6 +80,8 @@ services:
       - REDIRECT_QUEUE=redirect
       - ANALYTIC_QUEUE=analytic
       - OTEL_ENDPOINT=agent:4317
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/lru_mapper
+      - GATEWAY_URL=http://gateway:3333
     depends_on:
       - postgres
       - redis
