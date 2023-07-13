@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
+import { Body, Controller, HttpException, Post, Request } from '@nestjs/common';
+import { HttpStatusCode } from 'axios';
 import { ShortenDTO } from 'src/model/models';
 import { ShortenService } from './shorten.service';
 
@@ -16,17 +17,22 @@ export class ShortenController {
       };
     } catch (e) {
       if (e.message === 'Client error') {
-        return {
-          requestId,
-          error: 'Client error',
-        };
+        throw new HttpException(
+          {
+            requestId,
+            error: 'Client error',
+          },
+          HttpStatusCode.BadRequest,
+        );
       }
 
-      // Server error
-      return {
-        requestId,
-        error: 'Server error',
-      };
+      throw new HttpException(
+        {
+          requestId,
+          error: 'Server error',
+        },
+        HttpStatusCode.InternalServerError,
+      );
     }
   }
 }
