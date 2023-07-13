@@ -20,7 +20,6 @@ export class ShortenController {
         throw new HttpException(
           {
             requestId,
-            error: 'Client error',
           },
           HttpStatusCode.BadRequest,
         );
@@ -29,7 +28,6 @@ export class ShortenController {
       throw new HttpException(
         {
           requestId,
-          error: 'Server error',
         },
         HttpStatusCode.InternalServerError,
       );
