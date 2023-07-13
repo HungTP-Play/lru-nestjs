@@ -5,4 +5,3 @@ redirect/node_modules
 analytic/node_modules
 grafana/png
 grafana/csv
-*/**/dist
