@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import { ShortenDTO, ShortenResponseDTO } from 'src/model/models';
+import { RabbitMQCommunicator } from 'src/rabbitmq';
 import { PrismaService } from './prisma.client';
 
 @Injectable()
 export class MapService {
   constructor(
     private prismaService: PrismaService,
-    @Inject('REDIRECT_SERVICE') private redirectService: ClientProxy,
+    @Inject('RABBITMQ_COMMUNICATOR')
+    private redirectService: RabbitMQCommunicator,
   ) {}
   private base62Encode(num: number): string {
     const base62 =
@@ -31,12 +32,15 @@ export class MapService {
     const result = await this.prismaService.createShortenUrl(url, shortenUrl);
 
     // Send message to redirect service
-    this.redirectService.emit('redirect::create', {
+    const message = {
       url: url,
       shortUrl: result.short_url,
       id: id,
-    });
-    console.debug(`[[[redirect::create]]] ${url} ${result.short_url} ${id}]]`);
+    };
+    this.redirectService.sendToQueue('redirect', JSON.stringify(message));
+    console.log(
+      `[[ mapper ]] Sent redirect event for ${JSON.stringify(message)}`,
+    );
 
     return {
       url: url,

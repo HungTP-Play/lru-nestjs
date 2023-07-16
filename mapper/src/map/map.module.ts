@@ -1,28 +1,20 @@
-import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { Module, Provider } from '@nestjs/common';
+import { RabbitMQCommunicator } from 'src/rabbitmq';
 import { MapController } from './map.controller';
 import { MapService } from './map.service';
 import { PrismaService } from './prisma.client';
 
+const rabbitmqProvider: Provider = {
+  provide: 'RABBITMQ_COMMUNICATOR',
+  useFactory: () => {
+    const connectionString =
+      process.env.RABBITMQ_URL || 'amqp://guest:guest@rabbitmq:5672';
+    return new RabbitMQCommunicator(connectionString);
+  },
+};
+
 @Module({
   controllers: [MapController],
-  providers: [PrismaService, MapService],
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'REDIRECT_SERVICE',
-        options: {
-          transport: Transport.RMQ,
-          options: {
-            urls: ['amqp://rabbitmq:5672'],
-            queue: 'redirect',
-            queueOptions: {
-              durable: false,
-            },
-          },
-        },
-      },
-    ]),
-  ],
+  providers: [PrismaService, MapService, rabbitmqProvider],
 })
 export class MapModule {}
