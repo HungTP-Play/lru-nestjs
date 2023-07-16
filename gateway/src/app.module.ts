@@ -4,10 +4,11 @@ import { AllExceptionsFilter } from 'filter/exception.filter';
 import { RequestIdMiddleware } from 'middlewares/request_id.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { RedirectModule } from './redirect/redirect.module';
 import { ShortenModule } from './shorten/shorten.module';
 
 @Module({
-  imports: [ShortenModule],
+  imports: [ShortenModule, RedirectModule],
   controllers: [AppController],
   providers: [
     AppService,

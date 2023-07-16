@@ -7,7 +7,7 @@ import { RabbitMQCommunicator } from './rabbitmq';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function onAnalyticMessage(message: amqp.Message) {
+async function onAnalyticMessage(message: amqp.Message) {
   console.log(`[[ analytic ]] Received analytic message: ${message.content}`);
 
   const dbClient = new PrismaClient();
@@ -15,7 +15,7 @@ function onAnalyticMessage(message: amqp.Message) {
     JSON.parse(message.content.toString())
   );
   if (analyticMessage.type === 'MAP') {
-    dbClient.urlMapAnalytic.create({
+    await dbClient.urlMapAnalytic.create({
       data: {
         shortUrl: analyticMessage.shortUrl,
         url: analyticMessage.url,
@@ -25,7 +25,7 @@ function onAnalyticMessage(message: amqp.Message) {
       `[[ analytic ]] Saved analytic message -- MAP : ${message.content}`,
     );
   } else {
-    dbClient.urlRedirectAnalytic.create({
+    await dbClient.urlRedirectAnalytic.create({
       data: {
         shortUrl: analyticMessage.shortUrl,
         url: analyticMessage.url,

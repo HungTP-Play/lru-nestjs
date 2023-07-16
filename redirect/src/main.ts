@@ -10,7 +10,7 @@ function sleep(ms) {
   });
 }
 
-function onRedirectMessageConsumer(message: amqp.Message) {
+async function onRedirectMessageConsumer(message: amqp.Message) {
   const content = message.content.toString();
   try {
     console.log(`[[ redirect ]] Received message: ${content}`);
@@ -21,12 +21,13 @@ function onRedirectMessageConsumer(message: amqp.Message) {
     };
 
     const prismaClient = new PrismaClient();
-    prismaClient.redirectUrl.create({
+    await prismaClient.redirectUrl.create({
       data: {
         url: url,
         shortUrl: shortUrl,
       },
     });
+    console.log(`[[ redirect ]] Saved to database`);
   } catch (e) {
     console.error(
       `[[ redirect ]] Error Consuming message -- err: ${e}; message: ${content}`,
