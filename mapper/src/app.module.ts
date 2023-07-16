@@ -4,8 +4,8 @@ import { AppService } from './app.service';
 import { MapModule } from './map/map.module';
 
 @Module({
-  imports: [MapModule],
   controllers: [AppController],
   providers: [AppService],
+  imports: [MapModule],
 })
 export class AppModule {}

@@ -10,12 +10,12 @@ export type ShortenResponseDTO = {
 };
 
 export type RedirectDTO = {
-  Id: string;
-  Url: string;
+  id: string;
+  url: string;
 };
 
 export type RedirectResponseDTO = {
-  Id: string;
-  Url: string;
-  OriginalUrl: string;
+  id: string;
+  url: string;
+  originalUrl: string;
 };

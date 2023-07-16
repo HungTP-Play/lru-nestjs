@@ -11,9 +11,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model UrlMap {
+model RedirectUrl {
   id        Int      @id @default(autoincrement())
   url       String
-  short_url String   @unique
-  created_at DateTime @default(now())
+  shortUrl  String   @unique
+  createdAt DateTime @default(now())
 }

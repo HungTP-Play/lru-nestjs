@@ -82,6 +82,7 @@ services:
       - OTEL_ENDPOINT=agent:4317
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/lru_mapper
       - GATEWAY_URL=http://gateway:3333
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     depends_on:
       - postgres
       - redis
@@ -117,6 +118,8 @@ services:
       - REDIRECT_QUEUE=redirect
       - ANALYTIC_QUEUE=analytic
       - OTEL_ENDPOINT=agent:4317
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/lru_redirect
     depends_on:
       - rabbitmq
       - redis
@@ -130,40 +133,40 @@ services:
       - npm
       - run
       - start
-  analytic:
-    image: lru-nestjs-analytic:local
-    build:
-      context: ./analytic
-      dockerfile: Dockerfile
-    environment:
-      - PORT=4444
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
-      - RABBITMQ_QUEUE=map
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=lru_analytic
-      - ANALYTIC_QUEUE=analytic
-      - OTEL_ENDPOINT=agent:4317
-    depends_on:
-      - rabbitmq
-      - redis
-      - postgres
-    ports:
-      - 4444:4444
-    volumes:
-      - ./analytic:/app
-      - ~/data/lru-nestjs/logs:/var/log
-    command:
-      - npm
-      - run
-      - start
+  # analytic:
+  #   image: lru-nestjs-analytic:local
+  #   build:
+  #     context: ./analytic
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - PORT=4444
+  #     - RABBITMQ_HOST=rabbitmq
+  #     - RABBITMQ_PORT=5672
+  #     - RABBITMQ_USER=guest
+  #     - RABBITMQ_PASSWORD=guest
+  #     - RABBITMQ_QUEUE=map
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_PORT=5432
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=lru_analytic
+  #     - ANALYTIC_QUEUE=analytic
+  #     - OTEL_ENDPOINT=agent:4317
+  #   depends_on:
+  #     - rabbitmq
+  #     - redis
+  #     - postgres
+  #   ports:
+  #     - 4444:4444
+  #   volumes:
+  #     - ./analytic:/app
+  #     - ~/data/lru-nestjs/logs:/var/log
+  #   command:
+  #     - npm
+  #     - run
+  #     - start
   # prometheus:
   #   image: prom/prometheus
   #   ports:
