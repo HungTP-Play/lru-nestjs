@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ShortenDTO, ShortenResponseDTO } from 'src/model/models';
+import {
+  AnalyticMessage,
+  ShortenDTO,
+  ShortenResponseDTO,
+} from 'src/model/models';
 import { RabbitMQCommunicator } from 'src/rabbitmq';
 import { PrismaService } from './prisma.client';
 
@@ -9,6 +13,8 @@ export class MapService {
     private prismaService: PrismaService,
     @Inject('RABBITMQ_COMMUNICATOR')
     private redirectService: RabbitMQCommunicator,
+    @Inject('ANALYTIC_COMMUNICATOR')
+    private analyticService: RabbitMQCommunicator,
   ) {}
   private base62Encode(num: number): string {
     const base62 =
@@ -40,6 +46,21 @@ export class MapService {
     this.redirectService.sendToQueue('redirect', JSON.stringify(message));
     console.log(
       `[[ mapper ]] Sent redirect event for ${JSON.stringify(message)}`,
+    );
+
+    // Send to analytic service
+    const analyticMessage: AnalyticMessage = {
+      url: url,
+      shortUrl: result.short_url,
+      id: id,
+      type: 'MAP',
+    };
+    this.analyticService.sendToQueue(
+      'analytic',
+      JSON.stringify(analyticMessage),
+    );
+    console.log(
+      `[[ mapper ]] Sent analytic event for ${JSON.stringify(analyticMessage)}`,
     );
 
     return {

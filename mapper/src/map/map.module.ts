@@ -13,8 +13,22 @@ const rabbitmqProvider: Provider = {
   },
 };
 
+const analyticCommunicatorProvider: Provider = {
+  provide: 'ANALYTIC_COMMUNICATOR',
+  useFactory: () => {
+    const connectionString =
+      process.env.RABBITMQ_URL || 'amqp://guest:guest@rabbitmq:5672';
+    return new RabbitMQCommunicator(connectionString);
+  },
+};
+
 @Module({
   controllers: [MapController],
-  providers: [PrismaService, MapService, rabbitmqProvider],
+  providers: [
+    PrismaService,
+    MapService,
+    rabbitmqProvider,
+    analyticCommunicatorProvider,
+  ],
 })
 export class MapModule {}
